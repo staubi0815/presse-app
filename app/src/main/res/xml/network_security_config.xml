@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Kein Cleartext-Traffic erlaubt - alle Zielseiten (VOEBB, Genios, Muenzinger,
+  das Spiegel-Titelbild) sind ohnehin ausschliesslich per HTTPS erreichbar.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
