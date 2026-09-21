@@ -16,6 +16,7 @@ import dev.homelab.presseapp.data.SecureCredentialStore
 class AllowlistWebViewClient(
     private val credentialStore: SecureCredentialStore,
     private val onLoadingStateChanged: (Boolean) -> Unit,
+    private val onUrlChanged: (String) -> Unit,
 ) : WebViewClient() {
 
     private val extraAllowedHosts = setOf("magazin.spiegel.de")
@@ -37,10 +38,12 @@ class AllowlistWebViewClient(
 
     override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
         onLoadingStateChanged(true)
+        onUrlChanged(url)
     }
 
     override fun onPageFinished(view: WebView, url: String) {
         onLoadingStateChanged(false)
+        onUrlChanged(url)
         LoginAutomator.runNextStep(view, url, credentialStore)
     }
 }

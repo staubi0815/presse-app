@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import dev.homelab.presseapp.BuildConfig
 import dev.homelab.presseapp.data.SecureCredentialStore
 import dev.homelab.presseapp.data.Source
 import dev.homelab.presseapp.webview.AllowlistWebViewClient
@@ -50,6 +51,7 @@ fun ReaderScreen(
     val context = LocalContext.current
     var isLoading by remember { mutableStateOf(true) }
     var webViewRef by remember { mutableStateOf<WebView?>(null) }
+    var currentUrl by remember { mutableStateOf("") }
 
     BackHandler {
         val wv = webViewRef
@@ -59,7 +61,19 @@ fun ReaderScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(source.label) },
+                title = {
+                    androidx.compose.foundation.layout.Column {
+                        Text(source.label)
+                        if (currentUrl.isNotBlank()) {
+                            Text(
+                                text = currentUrl,
+                                style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = {
                         val wv = webViewRef
@@ -80,6 +94,9 @@ fun ReaderScreen(
             AndroidView(
                 modifier = Modifier.fillMaxSize(),
                 factory = {
+                    if (BuildConfig.DEBUG) {
+                        WebView.setWebContentsDebuggingEnabled(true)
+                    }
                     WebView(context).apply {
                         settings.javaScriptEnabled = true
                         settings.domStorageEnabled = true
@@ -97,6 +114,7 @@ fun ReaderScreen(
                         webViewClient = AllowlistWebViewClient(
                             credentialStore = credentialStore,
                             onLoadingStateChanged = { loading -> isLoading = loading },
+                            onUrlChanged = { url -> currentUrl = url },
                         )
                         // VOEBB-SSO/OIDC-Login (Muenzinger) oeffnet den Login-Schritt per
                         // window.open() in einem neuen Fenster - ohne diesen Handler
