@@ -27,7 +27,11 @@ object LoginAutomator {
     private val ALLOWED_HOSTS = setOf(
         "voebb.de", "www.voebb.de",
         "bib-voebb.genios.de",
-        "online.munzinger.de",
+        // "munzinger.de" deckt per endsWith-Logik unten auch die
+        // OIDC-Login-Weiterleitung ueber www.munzinger.de mit ab (bisher nur
+        // online.munzinger.de erlaubt, wodurch genau dieser Redirect
+        // (/search/oidc/auth/...) stillschweigend blockiert wurde).
+        "munzinger.de",
     )
 
     fun isAllowedHost(url: String): Boolean {

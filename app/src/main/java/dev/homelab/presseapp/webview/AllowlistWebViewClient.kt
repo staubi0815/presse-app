@@ -1,6 +1,7 @@
 package dev.homelab.presseapp.webview
 
 import android.net.Uri
+import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -31,6 +32,7 @@ class AllowlistWebViewClient(
         val url = request.url.toString()
         if (!isAllowed(url)) {
             // Fremd-Domain: nicht in der WebView oeffnen, einfach ignorieren.
+            Log.w("AllowlistWebView", "Blockiert (nicht auf Allowlist): $url")
             return true
         }
         return false
