@@ -66,7 +66,7 @@ fun CredentialsScreen(
                 onValueChange = { pin = it },
                 label = { Text("PIN") },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
