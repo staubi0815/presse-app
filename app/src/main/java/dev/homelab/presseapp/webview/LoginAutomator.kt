@@ -102,6 +102,22 @@ object LoginAutomator {
                         return;
                     }
 
+                    // Regel G: Login erfolgreich, aber die OIDC-Weiterleitung landet
+                    // auf der Muenzinger-Portal-Startseite ("/") statt direkt auf der
+                    // Spiegel-Publikation -> einmalig dorthin weiterleiten.
+                    if (location.hostname.endsWith('munzinger.de') &&
+                        location.pathname === '/' &&
+                        !document.querySelector('.login-modal') &&
+                        !window.__presseAppRedirectedToPub) {
+                        var params = new URLSearchParams(location.search);
+                        var portalid = params.get('portalid');
+                        if (portalid) {
+                            window.__presseAppRedirectedToPub = true;
+                            location.href = 'https://online.munzinger.de/publikation/spiegel?portalid=' + portalid;
+                            return;
+                        }
+                    }
+
                     // Regel B: "Mein Konto"-Link (fuehrt erst zum Login-Formular)
                     clickByText('Mein Konto', ['a']);
                 }
