@@ -133,6 +133,18 @@ fun ReaderScreen(
                                 resultMsg.sendToTarget()
                                 return true
                             }
+
+                            // Standardmaessig gibt WebView JS-console.*-Ausgaben NICHT an
+                            // logcat weiter - ohne diesen Override sind clientseitige
+                            // Fehler der Zielseite (z.B. bei der leeren Muenzinger-Seite)
+                            // unsichtbar.
+                            override fun onConsoleMessage(message: android.webkit.ConsoleMessage): Boolean {
+                                android.util.Log.w(
+                                    "WebViewConsole",
+                                    "${message.messageLevel()} ${message.sourceId()}:${message.lineNumber()}: ${message.message()}",
+                                )
+                                return true
+                            }
                         }
 
                         webViewRef = this
