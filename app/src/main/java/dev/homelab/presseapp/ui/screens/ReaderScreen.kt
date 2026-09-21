@@ -1,7 +1,9 @@
 package dev.homelab.presseapp.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Message
 import android.webkit.CookieManager
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
@@ -82,6 +84,8 @@ fun ReaderScreen(
                         settings.javaScriptEnabled = true
                         settings.domStorageEnabled = true
                         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                        settings.javaScriptCanOpenWindowsAutomatically = true
+                        settings.setSupportMultipleWindows(true)
 
                         if (WebViewFeature.isFeatureSupported(WebViewFeature.SAFE_BROWSING_ENABLE)) {
                             WebSettingsCompat.setSafeBrowsingEnabled(settings, true)
@@ -94,6 +98,24 @@ fun ReaderScreen(
                             credentialStore = credentialStore,
                             onLoadingStateChanged = { loading -> isLoading = loading },
                         )
+                        // VOEBB-SSO/OIDC-Login (Muenzinger) oeffnet den Login-Schritt per
+                        // window.open() in einem neuen Fenster - ohne diesen Handler
+                        // verschluckt die WebView das stillschweigend (Nutzer haengt an
+                        // einem endlosen Lade-Spinner fest). Popup-Inhalt wird stattdessen
+                        // einfach in derselben WebView geladen.
+                        webChromeClient = object : WebChromeClient() {
+                            override fun onCreateWindow(
+                                view: WebView,
+                                isDialog: Boolean,
+                                isUserGesture: Boolean,
+                                resultMsg: Message,
+                            ): Boolean {
+                                val transport = resultMsg.obj as WebView.WebViewTransport
+                                transport.webView = view
+                                resultMsg.sendToTarget()
+                                return true
+                            }
+                        }
 
                         webViewRef = this
                         loadUrl(source.entryUrl)
