@@ -120,6 +120,20 @@ object LoginAutomator {
 
                     // Regel B: "Mein Konto"-Link (fuehrt erst zum Login-Formular)
                     clickByText('Mein Konto', ['a']);
+
+                    // Regel H: Muenzinger-Publikationsseite geladen, Inhalt steht im DOM,
+                    // aber der position:fixed-Hauptcontainer der Vue-App bleibt leer
+                    // (per DevTools-Diagnose bestaetigt: Hoehe 0 trotz vorhandenem
+                    // Inhalt). Ein nachtraeglich ausgeloestes resize-Event bringt
+                    // Layout-Berechnungen, die von window.innerWidth/Height abhaengen,
+                    // oft wieder zum Laufen - billiger, ungefaehrlicher Versuch.
+                    if (location.hostname.endsWith('munzinger.de') &&
+                        location.pathname.indexOf('/publikation/') === 0 &&
+                        !window.__presseAppResizeNudge) {
+                        window.__presseAppResizeNudge = true;
+                        window.dispatchEvent(new Event('resize'));
+                        window.dispatchEvent(new Event('orientationchange'));
+                    }
                 }
 
                 var attempts = 0;

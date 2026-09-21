@@ -103,6 +103,14 @@ fun ReaderScreen(
                         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
                         settings.javaScriptCanOpenWindowsAutomatically = true
                         settings.setSupportMultipleWindows(true)
+                        // Ohne diese beiden Einstellungen ignoriert WebView das
+                        // <meta name="viewport"> der Seite und layoutet stattdessen
+                        // mit einer synthetischen Desktop-Breite. Bei Muenzinger fuehrt
+                        // das dazu, dass der position:fixed-Hauptcontainer der Vue-App
+                        // auf Hoehe 0 kollabiert (leere weisse Seite trotz vorhandenem
+                        // Inhalt im DOM).
+                        settings.useWideViewPort = true
+                        settings.loadWithOverviewMode = true
 
                         if (WebViewFeature.isFeatureSupported(WebViewFeature.SAFE_BROWSING_ENABLE)) {
                             WebSettingsCompat.setSafeBrowsingEnabled(settings, true)
