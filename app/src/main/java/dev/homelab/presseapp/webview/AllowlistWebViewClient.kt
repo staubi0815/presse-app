@@ -47,24 +47,5 @@ class AllowlistWebViewClient(
         onLoadingStateChanged(false)
         onUrlChanged(url)
         LoginAutomator.runNextStep(view, url, credentialStore)
-        forceRepaint(view)
-    }
-
-    // Bekannter Android-WebView-Bug: nach bestimmten Navigationen (v.a. per
-    // JS location.href statt echtem Link-Klick, wie bei unserer Regel G)
-    // bleibt der GPU-Compositor-Layer leer, obwohl das DOM/Layout korrekt
-    // ist - per DevTools-Diagnose bestaetigt (Inhalt vorhanden, Bounding-Box
-    // korrekt, aber nichts gezeichnet). Kurzes Umschalten des Layer-Typs
-    // erzwingt einen sauberen Neuzeichnen-Durchlauf.
-    private fun forceRepaint(view: WebView) {
-        view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
-        view.postDelayed({ view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null) }, 150)
-        // Bei SPAs (Vue etc.) steht der eigentliche Inhalt oft erst nach
-        // onPageFinished per Client-Side-Rendering - ein zweiter, spaeterer
-        // Durchlauf faengt auch diesen Fall ab.
-        view.postDelayed({
-            view.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
-            view.postDelayed({ view.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null) }, 150)
-        }, 1000)
     }
 }

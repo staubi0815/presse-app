@@ -54,6 +54,20 @@ object LoginAutomator {
                 if (window.__presseAppAutopilot) { return; }
                 window.__presseAppAutopilot = true;
 
+                // Muenzinger-CSS-Bug (per Live-Diagnose bestaetigt): #app hat eine
+                // berechnete Hoehe von 0px, obwohl der komplette Seiteninhalt
+                // (Inhaltsverzeichnis etc.) real im DOM steht - dadurch bleibt die
+                // Seite komplett leer/weiss, obwohl alles geladen ist. Ohne
+                // erkennbaren Ausloeser auf Munzinger-Seite normalerweise durch
+                // eigenes JS behoben, das in unserer WebView offenbar nicht greift.
+                // Fix: Hoehe/Overflow per eigenem <style>-Tag erzwingen.
+                if (location.hostname.endsWith('munzinger.de') && !document.getElementById('presse-app-css-fix')) {
+                    var styleEl = document.createElement('style');
+                    styleEl.id = 'presse-app-css-fix';
+                    styleEl.textContent = '#app { height: auto !important; overflow: visible !important; max-height: none !important; }';
+                    document.head.appendChild(styleEl);
+                }
+
                 function clickOnce(el) {
                     if (!el || el.dataset.presseAppClicked === '1') { return false; }
                     el.dataset.presseAppClicked = '1';
