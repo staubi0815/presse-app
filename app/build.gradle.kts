@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.webkit)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.tink.android)
     implementation(libs.kotlinx.coroutines.android)

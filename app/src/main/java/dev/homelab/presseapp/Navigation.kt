@@ -55,6 +55,7 @@ fun AppNavHost(credentialStore: SecureCredentialStore, readerStateStore: ReaderS
                 credentialStore = credentialStore,
                 readerStateStore = readerStateStore,
                 onBack = { navController.popBackStack() },
+                onHome = { navController.popBackStack(HomeRoute, inclusive = false) },
             )
         }
     }

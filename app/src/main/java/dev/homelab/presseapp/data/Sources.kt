@@ -39,4 +39,28 @@ enum class Source(
         accentColorHex = 0xFF002F6C,
         logoRes = R.drawable.logo_handelsblatt,
     ),
+    SZ(
+        label = "Süddeutsche Zeitung",
+        entryUrl = "https://bib-voebb.genios.de/toc_list/SZ",
+        accentColorHex = 0xFF1B4F72,
+        logoRes = R.drawable.logo_sz,
+    ),
+    SZW(
+        label = "SZ am Wochenende",
+        entryUrl = "https://bib-voebb.genios.de/toc_list/SZW",
+        accentColorHex = 0xFF3D7EA6,
+        logoRes = R.drawable.logo_sz,
+    ),
+    TSP(
+        label = "Tagesspiegel",
+        entryUrl = "https://bib-voebb.genios.de/toc_list/TSP",
+        accentColorHex = 0xFFB0202E,
+        logoRes = R.drawable.logo_tsp,
+    ),
+    ZEIT(
+        label = "Die Zeit",
+        entryUrl = "https://bib-voebb.genios.de/toc_list/ZEIT",
+        accentColorHex = 0xFF7A9A3F,
+        logoRes = R.drawable.logo_zeit,
+    ),
 }
