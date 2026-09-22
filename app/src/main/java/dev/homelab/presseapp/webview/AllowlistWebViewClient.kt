@@ -2,7 +2,9 @@ package dev.homelab.presseapp.webview
 
 import android.net.Uri
 import android.util.Log
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import dev.homelab.presseapp.data.SecureCredentialStore
@@ -18,6 +20,7 @@ class AllowlistWebViewClient(
     private val credentialStore: SecureCredentialStore,
     private val onLoadingStateChanged: (Boolean) -> Unit,
     private val onUrlChanged: (String) -> Unit,
+    private val onMainFrameError: (String) -> Unit,
 ) : WebViewClient() {
 
     private val extraAllowedHosts = setOf("magazin.spiegel.de")
@@ -47,5 +50,20 @@ class AllowlistWebViewClient(
         onLoadingStateChanged(false)
         onUrlChanged(url)
         LoginAutomator.runNextStep(view, url, credentialStore)
+    }
+
+    // Nur Hauptdokument-Fehler melden (nicht jede blockierte/fehlgeschlagene
+    // Nebenressource wie Tracking-Skripte o.ae.) - sonst wuerde staendig ein
+    // Fehlerbildschirm aufpoppen, obwohl die eigentliche Seite laedt.
+    override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+        if (request.isForMainFrame) {
+            onMainFrameError(error.description?.toString() ?: "Unbekannter Fehler")
+        }
+    }
+
+    override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
+        if (request.isForMainFrame) {
+            onMainFrameError("HTTP ${errorResponse.statusCode}")
+        }
     }
 }

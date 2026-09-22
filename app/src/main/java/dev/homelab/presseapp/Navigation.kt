@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import dev.homelab.presseapp.data.ReaderStateStore
 import dev.homelab.presseapp.data.SecureCredentialStore
 import dev.homelab.presseapp.data.Source
 import dev.homelab.presseapp.ui.screens.CredentialsScreen
@@ -23,7 +24,7 @@ object HomeRoute
 data class ReaderRoute(val sourceName: String)
 
 @Composable
-fun AppNavHost(credentialStore: SecureCredentialStore) {
+fun AppNavHost(credentialStore: SecureCredentialStore, readerStateStore: ReaderStateStore) {
     val navController: NavHostController = rememberNavController()
     val startDestination = if (credentialStore.hasCredentials()) HomeRoute else CredentialsRoute
 
@@ -52,6 +53,7 @@ fun AppNavHost(credentialStore: SecureCredentialStore) {
             ReaderScreen(
                 source = source,
                 credentialStore = credentialStore,
+                readerStateStore = readerStateStore,
                 onBack = { navController.popBackStack() },
             )
         }

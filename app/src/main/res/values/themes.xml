@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Reiner Compose-App: kein AppCompat/Material-Components-Abhaengigkeit
+         noetig, daher zwei eigene statische Basis-Themes (hell/values,
+         dunkel/values-night) statt eines Bibliotheks-DayNight-Themes. -->
+    <style name="Theme.PresseApp" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
