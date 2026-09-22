@@ -45,12 +45,6 @@ enum class Source(
         accentColorHex = 0xFF1B4F72,
         logoRes = R.drawable.logo_sz,
     ),
-    SZW(
-        label = "SZ am Wochenende",
-        entryUrl = "https://bib-voebb.genios.de/toc_list/SZW",
-        accentColorHex = 0xFF3D7EA6,
-        logoRes = R.drawable.logo_sz,
-    ),
     TSP(
         label = "Tagesspiegel",
         entryUrl = "https://bib-voebb.genios.de/toc_list/TSP",

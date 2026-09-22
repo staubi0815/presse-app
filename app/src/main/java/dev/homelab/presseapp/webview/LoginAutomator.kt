@@ -88,8 +88,14 @@ object LoginAutomator {
                 }
 
                 function tryStep() {
-                    // Regel A: Sitzung wurde beendet -> neue Sitzung starten
-                    if (clickOnce(document.querySelector('a.endsession'))) { return; }
+                    var onVoebb = location.hostname.endsWith('voebb.de');
+
+                    // Regel A: Sitzung wurde beendet -> neue Sitzung starten.
+                    // NUR auf voebb.de (dort gehoert dieser Link zum aDIS/BMS-Login-
+                    // Flow) - ohne dieses Gate hat die Automatik auf Genios-Seiten
+                    // faelschlich auf gleichnamige/aehnliche Elemente reagiert und
+                    // ist ungefragt auf der Seite herumgesprungen.
+                    if (onVoebb && clickOnce(document.querySelector('a.endsession'))) { return; }
 
                     // Regel F: Muenzinger-Login-Modal auf "Institution/Firma/
                     // Kunde"-Tab statt "Mit Bibliotheksausweis" -> umschalten
@@ -132,8 +138,11 @@ object LoginAutomator {
                         }
                     }
 
-                    // Regel B: "Mein Konto"-Link (fuehrt erst zum Login-Formular)
-                    clickByText('Mein Konto', ['a']);
+                    // Regel B: "Mein Konto"-Link (fuehrt erst zum Login-Formular).
+                    // NUR auf voebb.de - Genios hat im eingeloggten Zustand selbst
+                    // einen "Mein Konto"-Link im Header, den die Automatik sonst
+                    // faelschlich anklickt (s. Regel A).
+                    if (onVoebb) { clickByText('Mein Konto', ['a']); }
 
                     // Regel H: Muenzinger-Publikationsseite geladen, Inhalt steht im DOM,
                     // aber der position:fixed-Hauptcontainer der Vue-App bleibt leer
