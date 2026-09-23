@@ -46,7 +46,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import dev.homelab.presseapp.BuildConfig
-import dev.homelab.presseapp.data.ReaderStateStore
 import dev.homelab.presseapp.data.SecureCredentialStore
 import dev.homelab.presseapp.data.Source
 import dev.homelab.presseapp.webview.AllowlistWebViewClient
@@ -62,7 +61,6 @@ import dev.homelab.presseapp.webview.AllowlistWebViewClient
 fun ReaderScreen(
     source: Source,
     credentialStore: SecureCredentialStore,
-    readerStateStore: ReaderStateStore,
     onBack: () -> Unit,
     onHome: () -> Unit,
 ) {
@@ -185,15 +183,7 @@ fun ReaderScreen(
                                     isLoading = loading
                                     if (loading) errorMessage = null
                                 },
-                                onUrlChanged = { url ->
-                                    currentUrl = url
-                                    // voebb.de ist nur die durchlaufende SSO-Zwischenstation -
-                                    // dort waere ein spaeterer Direktstart witzlos/fehleranfaellig
-                                    // (abgelaufene Consent-URL statt echtem Einstiegspunkt).
-                                    if (Uri.parse(url).host?.endsWith("voebb.de") != true) {
-                                        readerStateStore.saveLastUrl(source.name, url)
-                                    }
-                                },
+                                onUrlChanged = { url -> currentUrl = url },
                                 onMainFrameError = { message -> errorMessage = message },
                             )
                             // VOEBB-SSO/OIDC-Login (Muenzinger) oeffnet den Login-Schritt per
@@ -248,8 +238,7 @@ fun ReaderScreen(
                             }
 
                             webViewRef = this
-                            val startUrl = readerStateStore.loadLastUrl(source.name) ?: source.entryUrl
-                            loadUrl(startUrl)
+                            loadUrl(source.entryUrl)
                         }
 
                         SwipeRefreshLayout(context).apply {
